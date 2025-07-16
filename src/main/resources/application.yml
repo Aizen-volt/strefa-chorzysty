@@ -1,0 +1,4 @@
+security:
+  jwt-ttl: 15m
+  registration-token-ttl: 48h
+  registration-token-cleanup-cron: "0 0 3 * * *" # Every day at 3 AM
