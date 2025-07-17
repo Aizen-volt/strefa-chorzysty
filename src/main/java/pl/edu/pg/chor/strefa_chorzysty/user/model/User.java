@@ -20,9 +20,7 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Transient
-    private Email email;
-
+    private String email;
     private String password;
     private String phoneNumber;
     private String firstName;
@@ -34,24 +32,6 @@ public class User implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private Voice voice;
-
-    @Column(name = "email")
-    private String emailValue;
-
-    @PrePersist
-    @PreUpdate
-    private void syncEmailToValue() {
-        if (email != null) {
-            this.emailValue = email.toString();
-        }
-    }
-
-    @PostLoad
-    private void syncValueToEmail() {
-        if (emailValue != null) {
-            this.email = new Email(emailValue);
-        }
-    }
 
     private boolean enabled;
 
@@ -66,17 +46,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return getFullName();
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return !enabled;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return !enabled;
+        return email;
     }
 
     @Override

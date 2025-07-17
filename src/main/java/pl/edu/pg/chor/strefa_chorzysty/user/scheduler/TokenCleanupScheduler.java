@@ -2,25 +2,34 @@ package pl.edu.pg.chor.strefa_chorzysty.user.scheduler;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.TriggerContext;
+import org.springframework.scheduling.annotation.SchedulingConfigurer;
+import org.springframework.scheduling.config.ScheduledTaskRegistrar;
+import org.springframework.scheduling.support.CronTrigger;
+import pl.edu.pg.chor.strefa_chorzysty.config.service.AppSettingsService;
 import pl.edu.pg.chor.strefa_chorzysty.user.service.RegistrationTokenService;
 
-@Component
+@Configuration
 @RequiredArgsConstructor
 @Slf4j
-public class TokenCleanupScheduler {
+public class TokenCleanupScheduler implements SchedulingConfigurer {
 
     private final RegistrationTokenService registrationTokenService;
+    private final AppSettingsService settingsService;
 
-    @Scheduled(cron = "${security.registration-token-cleanup-cron}")
-    public void removeExpiredTokens() {
-        log.info("Started clean up of expired registration tokens");
-        try {
-            registrationTokenService.deleteExpiredTokens();
-        } catch (Exception e) {
-            log.error("Error during clean up of expired registration tokens", e);
-        }
-        log.info("Finished clean up of expired registration tokens");
+    @Override
+    public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
+        taskRegistrar.addTriggerTask(
+                () -> {
+                    log.info("Running token cleanup");
+                    registrationTokenService.deleteExpiredTokens();
+                },
+                (TriggerContext triggerContext) -> {
+                    String cron = settingsService.getSettings().registrationTokenCleanupCron();
+                    CronTrigger trigger = new CronTrigger(cron);
+                    return trigger.nextExecutionTime(triggerContext).toInstant();
+                }
+        );
     }
 }

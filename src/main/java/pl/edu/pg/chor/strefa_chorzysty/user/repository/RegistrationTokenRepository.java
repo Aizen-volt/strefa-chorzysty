@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface RegistrationTokenRepository extends JpaRepository<RegistrationToken, Long> {
 
-    Optional<RegistrationToken> save(RegistrationToken token);
+    Optional<RegistrationToken> findByToken(String token);
 
     void deleteAllByExpiryDateBefore(LocalDateTime time);
 }

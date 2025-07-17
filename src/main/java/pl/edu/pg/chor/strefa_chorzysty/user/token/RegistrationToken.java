@@ -9,19 +9,25 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class RegistrationToken {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, unique = true)
     private String token;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
     private User user;
 
+    @Column(nullable = false)
     private LocalDateTime expiryDate;
+
+    public boolean isExpired() {
+        return expiryDate.isBefore(LocalDateTime.now());
+    }
 }

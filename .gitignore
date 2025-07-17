@@ -1,10 +1,17 @@
-HELP.md
+# Maven
 target/
 .mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
 
-### STS ###
+# Gradle (jeśli używane)
+build/
+
+# Spring Boot configs
+.env
+application-local.yml
+application-dev.yml
+application-prod.yml
+
+# STS
 .apt_generated
 .classpath
 .factorypath
@@ -13,21 +20,30 @@ target/
 .springBeans
 .sts4-cache
 
-### IntelliJ IDEA ###
-.idea
+# IntelliJ
+.idea/
+!.idea/runConfigurations/
 *.iws
 *.iml
 *.ipr
 
-### NetBeans ###
+# NetBeans
 /nbproject/private/
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
 
-### VS Code ###
+# VS Code
 .vscode/
+
+# Test reports
+/coverage/
+/jacoco.exec
+/surefire-reports/
+/test-output/
+/allure-results/
+
+# OS junk
+.DS_Store
+Thumbs.db
